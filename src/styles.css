@@ -1,0 +1,242 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * WeatherGPT design system — "Instrument Operations"
+ * Dark, instrument-grade emergency weather console.
+ * All colors are oklch semantic tokens. Never hardcode colors in components.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --font-display: var(--font-family-display);
+  --font-sans: var(--font-family-sans);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-panel: var(--panel);
+  --color-panel-muted: var(--panel-muted);
+  --color-card: var(--panel);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--panel);
+  --color-popover-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--panel-muted);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--panel-muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-accent: var(--panel-muted);
+  --color-accent-foreground: var(--foreground);
+  --color-destructive: var(--hazard-critical);
+  --color-destructive-foreground: var(--foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--border-strong);
+  --color-ring: var(--hazard-safe);
+
+  --color-hazard-critical: var(--hazard-critical);
+  --color-hazard-severe: var(--hazard-severe);
+  --color-hazard-warning: var(--hazard-warning);
+  --color-hazard-safe: var(--hazard-safe);
+  --color-hazard-clear: var(--hazard-clear);
+}
+
+:root {
+  --radius: 0.5rem;
+  --font-family-display: "Oswald", ui-sans-serif, system-ui, sans-serif;
+  --font-family-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --background: oklch(0.141 0.005 285.823);
+  --foreground: oklch(0.967 0.001 286.375);
+  --panel: oklch(0.21 0.006 285.885);
+  --panel-muted: oklch(0.274 0.006 286.033);
+  --muted-foreground: oklch(0.705 0.015 286.067);
+  --subtle-foreground: oklch(0.552 0.016 285.938);
+  --border: oklch(0.274 0.006 286.033 / 70%);
+  --border-strong: oklch(0.37 0.008 286 / 90%);
+
+  --primary: oklch(0.715 0.143 215.221);
+  --primary-foreground: oklch(0.141 0.005 285.823);
+
+  --hazard-critical: oklch(0.637 0.237 25.331);
+  --hazard-severe: oklch(0.705 0.213 47.604);
+  --hazard-warning: oklch(0.795 0.184 86.047);
+  --hazard-safe: oklch(0.715 0.143 215.221);
+  --hazard-clear: oklch(0.723 0.15 160.9);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-family-sans);
+  }
+}
+
+/* ---------- Ambient hazard animations ---------- */
+
+@keyframes drift {
+  0% {
+    background-position:
+      0% 0%,
+      0% 0%;
+  }
+  100% {
+    background-position:
+      20% 100%,
+      -20% 100%;
+  }
+}
+
+@utility hazard-rain {
+  background-image:
+    linear-gradient(160deg, oklch(1 0 0 / 8%) 1px, transparent 1px),
+    linear-gradient(200deg, oklch(1 0 0 / 4%) 1px, transparent 1px);
+  background-size:
+    26px 26px,
+    40px 40px;
+  animation: drift 0.9s linear infinite;
+}
+
+@utility hazard-storm {
+  background-image:
+    linear-gradient(135deg, oklch(1 0 0 / 7%) 1px, transparent 1px),
+    radial-gradient(circle at 30% 20%, oklch(0.795 0.184 86.047 / 12%), transparent 45%);
+  background-size:
+    30px 30px,
+    100% 100%;
+  animation: drift 0.7s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.9;
+  }
+  100% {
+    background-position: 100% 50%;
+    opacity: 0.55;
+  }
+}
+
+@utility hazard-heat {
+  background-image: repeating-linear-gradient(
+    90deg,
+    oklch(0.795 0.184 86.047 / 10%) 0px,
+    transparent 3px,
+    oklch(0.705 0.213 47.604 / 8%) 8px,
+    transparent 14px
+  );
+  background-size: 220% 100%;
+  animation: shimmer 6s ease-in-out infinite;
+}
+
+@keyframes swirl {
+  from {
+    transform: rotate(0deg) scale(1.4);
+  }
+  to {
+    transform: rotate(360deg) scale(1.4);
+  }
+}
+
+@utility hazard-cyclone {
+  background-image: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    oklch(0.715 0.143 215.221 / 14%) 60deg,
+    transparent 140deg,
+    oklch(0.637 0.237 25.331 / 12%) 240deg,
+    transparent 330deg
+  );
+  animation: swirl 22s linear infinite;
+}
+
+@keyframes rise {
+  0% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+@utility hazard-flood {
+  background-image: repeating-linear-gradient(
+    0deg,
+    oklch(0.715 0.143 215.221 / 10%) 0px,
+    oklch(0.715 0.143 215.221 / 10%) 2px,
+    transparent 2px,
+    transparent 22px
+  );
+  background-size: 100% 300%;
+  animation: rise 9s linear infinite;
+}
+
+@utility hazard-smog {
+  background-image:
+    radial-gradient(ellipse at 20% 70%, oklch(0.705 0.213 47.604 / 14%), transparent 55%),
+    radial-gradient(ellipse at 75% 30%, oklch(0.552 0.016 285.938 / 26%), transparent 55%);
+  background-size: 180% 180%;
+  animation: shimmer 14s ease-in-out infinite;
+}
+
+/* ---------- Map instruments ---------- */
+
+@keyframes sweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@utility radar-sweep {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    oklch(0.715 0.143 215.221 / 20%) 50%,
+    transparent 100%
+  );
+  animation: sweep 4s linear infinite;
+}
+
+@keyframes ping-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@utility impact-ring {
+  animation: ping-ring 3.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
