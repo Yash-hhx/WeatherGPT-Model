@@ -160,6 +160,122 @@ function buildAlertHazard(
     null,
   );
 
+  const INDIAN_STATES = [
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttar Pradesh",
+    "Uttarakhand",
+    "West Bengal",
+    "Delhi",
+    "Jammu and Kashmir",
+    "Ladakh",
+    "Puducherry",
+    "Chandigarh",
+    "Dadra and Nagar Haveli",
+    "Daman and Diu",
+  ];
+
+  const dynamicStateGroups: StateHazardGroup[] = [];
+  const stateMap = new Map<string, typeof scored>();
+  for (const item of scored) {
+    let st = item.a.state?.trim();
+    if (!st || st.toLowerCase() === "null" || st.toLowerCase() === "alert zone") {
+      const fullText = `${item.a.area_description} ${item.a.warning_message || ""}`.toLowerCase();
+      const matched = INDIAN_STATES.find((s) => fullText.includes(s.toLowerCase()));
+      st = matched || "National Alert Zone";
+    }
+    if (!stateMap.has(st)) stateMap.set(st, []);
+    stateMap.get(st)!.push(item);
+  }
+
+  for (const [st, items] of stateMap.entries()) {
+    const highestSev =
+      items.map((i) => i.s).sort((a, b) => SEVERITY_RANK[b] - SEVERITY_RANK[a])[0] || "warning";
+    const avgExposure = Math.round(
+      items.reduce((sum, i) => sum + impactIndex(i.a, i.s), 0) / items.length,
+    );
+    const validCoords = items.filter((i) => i.a.lat != null && i.a.lon != null);
+    const centerLat = validCoords.length
+      ? validCoords.reduce((s, i) => s + (i.a.lat as number), 0) / validCoords.length
+      : 22.0;
+    const centerLon = validCoords.length
+      ? validCoords.reduce((s, i) => s + (i.a.lon as number), 0) / validCoords.length
+      : 82.0;
+    const centerProj = project(centerLat, centerLon);
+
+    dynamicStateGroups.push({
+      state: st,
+      severity: highestSev,
+      exposure: avgExposure,
+      activeAlertsCount: items.length,
+      center: { x: centerProj.x, y: centerProj.y, lat: centerLat, lon: centerLon },
+      districts: items.slice(0, 10).map((it, idx) => {
+        let dProj =
+          it.a.lat != null && it.a.lon != null ? project(it.a.lat, it.a.lon) : { ...centerProj };
+
+        // If multiple items in same state share identical coordinates, disperse radially
+        if (
+          items.length > 1 &&
+          (it.a.lat == null ||
+            items.some(
+              (other, oIdx) =>
+                oIdx < idx &&
+                Math.abs((other.a.lat ?? 0) - (it.a.lat ?? 0)) < 0.05 &&
+                Math.abs((other.a.lon ?? 0) - (it.a.lon ?? 0)) < 0.05,
+            ))
+        ) {
+          const angle = (idx / Math.min(items.length, 10)) * 2 * Math.PI;
+          const radius = 3.2; // slight percentage dispersion
+          dProj = {
+            x: Math.max(12, Math.min(88, centerProj.x + Math.cos(angle) * radius)),
+            y: Math.max(12, Math.min(88, centerProj.y + Math.sin(angle) * radius)),
+          };
+        }
+
+        return {
+          name: shortArea(it.a.area_description),
+          state: st,
+          severity: it.s,
+          exposure: impactIndex(it.a, it.s),
+          lat: it.a.lat ?? centerLat,
+          lon: it.a.lon ?? centerLon,
+          x: dProj.x,
+          y: dProj.y,
+          dangerSummary: it.a.warning_message || `${it.a.disaster_type} Warning in force`,
+          evacuationPriority: it.s === "critical" ? "immediate" : "standby",
+          bulletin: it.a.warning_message || `${it.a.alert_source} active bulletin`,
+          safeSheltersCount: Math.max(8, Math.round(impactIndex(it.a, it.s) * 0.35)),
+        };
+      }),
+    });
+  }
+
+  const finalStateGroups =
+    dynamicStateGroups.length > 0 ? dynamicStateGroups : (template.stateGroups ?? []);
+
   return {
     ...template,
     id,
@@ -205,6 +321,8 @@ function buildAlertHazard(
           (v) => (v > 100 ? "severe" : v > 40 ? "warning" : "safe"),
           " MM",
         ),
+    stateGroups: finalStateGroups,
+    relocationHubs: template.relocationHubs ?? [],
     broadcast: [
       {
         title: "Sachet / Cell Broadcast",

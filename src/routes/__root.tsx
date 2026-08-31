@@ -78,8 +78,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "WeatherGPT" },
-      { name: "description", content: "Conversational weather and disaster intelligence." },
+      { title: "Forecast Companion Bot" },
+      {
+        name: "description",
+        content:
+          "Live weather forecasting and disaster early warning system for Indian State and UT Capitals with 6-hour hourly forecasts, state-wise de-clustered hazard drill-down, predictive disaster warning models, and 3-phase emergency response protocols.",
+      },
+      { property: "og:title", content: "Forecast Companion Bot" },
+      {
+        property: "og:description",
+        content:
+          "Live weather forecasting and disaster early warning system for Indian State and UT Capitals with 6-hour hourly forecasts, state-wise de-clustered hazard drill-down, predictive disaster warning models, and 3-phase emergency response protocols.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

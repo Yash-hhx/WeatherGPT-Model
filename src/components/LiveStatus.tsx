@@ -2,12 +2,17 @@ export function LiveStatus({
   lastRun,
   alertCount,
   refreshing,
+  now,
 }: {
   lastRun: string | null;
   alertCount: number;
   refreshing: boolean;
+  now?: number;
 }) {
-  const age = lastRun ? Math.round((Date.now() - new Date(lastRun).getTime()) / 60_000) : null;
+  const currentNow = now ?? (lastRun ? new Date(lastRun).getTime() : 1756641600000);
+  const age = lastRun
+    ? Math.max(0, Math.round((currentNow - new Date(lastRun).getTime()) / 60_000))
+    : null;
   const stale = age === null || age > 90;
 
   return (
@@ -21,7 +26,7 @@ export function LiveStatus({
               : "bg-hazard-safe"
         }`}
       />
-      <span>
+      <span suppressHydrationWarning>
         {refreshing
           ? "Syncing national feed…"
           : stale
