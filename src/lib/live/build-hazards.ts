@@ -367,7 +367,7 @@ function buildHeatHazard(alerts: LiveAlert[], conditions: LiveCondition[], now: 
       .filter((s, i, a) => a.indexOf(s) === i)
       .join(" · "),
     headline: `Live heat index peak ${top?.apparent_c?.toFixed(1) ?? "—"}°C at ${top?.city ?? "—"} — reading refreshes in`,
-    countdown: countdown(new Date(now + 20 * 60_000).toISOString(), now),
+    countdown: countdown(new Date(now + 5 * 60_000).toISOString(), now),
     severity,
     metrics: hottest.slice(0, 4).map((c) => ({
       label: `${c.city} Feels Like`,
@@ -409,7 +409,7 @@ function buildAqiHazard(alerts: LiveAlert[], conditions: LiveCondition[], now: n
       .filter((s, i, a) => a.indexOf(s) === i)
       .join(" · "),
     headline: `Live AQI peak ${Math.round(top?.us_aqi ?? 0)} at ${top?.city ?? "—"} — reading refreshes in`,
-    countdown: countdown(new Date(now + 20 * 60_000).toISOString(), now),
+    countdown: countdown(new Date(now + 5 * 60_000).toISOString(), now),
     severity,
     metrics: ranked.slice(0, 4).map((c) => ({
       label: `${c.city} AQI`,

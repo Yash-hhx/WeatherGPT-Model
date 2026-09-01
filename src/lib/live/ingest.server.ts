@@ -65,7 +65,11 @@ export interface AlertRow {
 export async function fetchOfficialAlerts(): Promise<AlertRow[]> {
   const res = await fetch(SACHET_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    headers: { 
+      "Content-Type": "application/json", 
+      Accept: "application/json",
+      "Cache-Control": "no-cache, no-store, must-revalidate"
+    },
     body: "{}",
   });
   if (!res.ok) throw new Error(`National alert feed returned ${res.status}`);
@@ -146,9 +150,10 @@ export async function fetchCityConditions(): Promise<ConditionRow[]> {
 
   const forecastUrl =
     `${FORECAST_URL}?latitude=${lats}&longitude=${lons}` +
-    "&current=temperature_2m,apparent_temperature,precipitation,wind_speed_10m" +
-    "&daily=precipitation_sum&forecast_days=1&wind_speed_unit=kmh&timezone=Asia%2FKolkata";
-  const airUrl = `${AIR_URL}?latitude=${lats}&longitude=${lons}&current=us_aqi,pm2_5&timezone=Asia%2FKolkata`;
+    "&current=temperature_2m,apparent_temperature,precipitation,wind_speed_10m,relative_humidity_2m,weather_code" +
+    "&wind_speed_unit=kmh&timezone=Asia%2FKolkata" +
+    `&cachebust=${Date.now()}`;
+  const airUrl = `${AIR_URL}?latitude=${lats}&longitude=${lons}&current=us_aqi,pm2_5&timezone=Asia%2FKolkata&cachebust=${Date.now()}`;
 
   const [forecastRes, airRes] = await Promise.all([fetch(forecastUrl), fetch(airUrl)]);
   if (!forecastRes.ok) throw new Error(`Weather feed returned ${forecastRes.status}`);

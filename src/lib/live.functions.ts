@@ -18,7 +18,7 @@ export const ensureFreshLiveData = createServerFn({ method: "POST" }).handler(as
 
   const lastRun = data?.ran_at ? new Date(data.ran_at).getTime() : 0;
   const ageMinutes = (Date.now() - lastRun) / 60_000;
-  if (ageMinutes < 20) return { refreshed: false, ageMinutes: Math.round(ageMinutes) };
+  if (ageMinutes < 5) return { refreshed: false, ageMinutes: Math.round(ageMinutes) };
 
   const { runIngest } = await import("@/lib/live/ingest.server");
   const summary = await runIngest();

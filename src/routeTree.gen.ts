@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SplatRouteImport } from './routes/$'
 import { Route as ApiPublicHooksRefreshAlertsRouteImport } from './routes/api/public/hooks/refresh-alerts'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicHooksRefreshAlertsRoute =
@@ -26,27 +32,31 @@ const ApiPublicHooksRefreshAlertsRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/api/public/hooks/refresh-alerts': typeof ApiPublicHooksRefreshAlertsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/api/public/hooks/refresh-alerts': typeof ApiPublicHooksRefreshAlertsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/api/public/hooks/refresh-alerts': typeof ApiPublicHooksRefreshAlertsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/public/hooks/refresh-alerts'
+  fullPaths: '/' | '/$' | '/api/public/hooks/refresh-alerts'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/public/hooks/refresh-alerts'
-  id: '__root__' | '/' | '/api/public/hooks/refresh-alerts'
+  to: '/' | '/$' | '/api/public/hooks/refresh-alerts'
+  id: '__root__' | '/' | '/$' | '/api/public/hooks/refresh-alerts'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SplatRoute: typeof SplatRoute
   ApiPublicHooksRefreshAlertsRoute: typeof ApiPublicHooksRefreshAlertsRoute
 }
 
@@ -57,6 +67,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/hooks/refresh-alerts': {
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SplatRoute: SplatRoute,
   ApiPublicHooksRefreshAlertsRoute: ApiPublicHooksRefreshAlertsRoute,
 }
 export const routeTree = rootRouteImport
