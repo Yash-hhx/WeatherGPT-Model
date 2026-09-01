@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { streamText } from "ai";
 import { z } from "zod";
 
-import { createLovableAiGatewayProvider } from "./ai-gateway.server";
+import { createLovableAiGatewayProvider, createOpenAiProvider } from "./ai-gateway.server";
 
 const ChatInput = z.object({
   hazard: z.string(),
@@ -19,13 +19,23 @@ const ChatInput = z.object({
 export const askWeatherGpt = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => ChatInput.parse(input))
   .handler(async ({ data }) => {
-    const apiKey = process.env["LOVABLE_API_KEY"];
-    if (!apiKey) throw new Error("AI is not configured for this project.");
+    const lovableKey = process.env["LOVABLE_API_KEY"];
+    const openaiKey = process.env["OPENAI_API_KEY"];
+    
+    if (!lovableKey && !openaiKey) {
+      throw new Error("AI not configured. Set LOVABLE_API_KEY or OPENAI_API_KEY in environment.");
+    }
 
-    const gateway = createLovableAiGatewayProvider(apiKey);
+    const gateway = lovableKey 
+      ? createLovableAiGatewayProvider(lovableKey)
+      : createOpenAiProvider(openaiKey!);
+
+    const modelName = lovableKey 
+      ? "google/gemini-3.7-flash"
+      : "gpt-4o-mini";
 
     const result = streamText({
-      model: gateway("google/gemini-3.7-flash"),
+      model: gateway(modelName),
       system: [
         "You are WeatherGPT, a tactical weather and disaster-intelligence analyst for INDIA, inside an emergency operations console.",
         "Ground everything in the Indian context: IMD colour-coded warnings (red/orange/yellow/green), CWC river danger levels, CPCB AQI and GRAP stages, NDMA/NDRF/SDRF and state SDMA/DDMA protocols, Sachet cell broadcast and the Damini lightning app.",

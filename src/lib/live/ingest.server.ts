@@ -150,7 +150,7 @@ export async function fetchCityConditions(): Promise<ConditionRow[]> {
 
   const forecastUrl =
     `${FORECAST_URL}?latitude=${lats}&longitude=${lons}` +
-    "&current=temperature_2m,apparent_temperature,precipitation,wind_speed_10m,relative_humidity_2m,weather_code" +
+    "&current=temperature_2m,apparent_temperature,precipitation,wind_speed_10m,relative_humidity_2m,weather_code,is_day" +
     "&wind_speed_unit=kmh&timezone=Asia%2FKolkata" +
     `&cachebust=${Date.now()}`;
   const airUrl = `${AIR_URL}?latitude=${lats}&longitude=${lons}&current=us_aqi,pm2_5&timezone=Asia%2FKolkata&cachebust=${Date.now()}`;
@@ -180,6 +180,8 @@ export async function fetchCityConditions(): Promise<ConditionRow[]> {
       wind_kph: num(f["wind_speed_10m"]),
       us_aqi: num(a["us_aqi"]),
       pm2_5: num(a["pm2_5"]),
+      weather_code: num(f["weather_code"]),
+      is_day: num(f["is_day"]),
       updated_at: now,
     };
   });

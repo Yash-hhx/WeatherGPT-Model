@@ -31,6 +31,8 @@ export interface LiveCondition {
   wind_kph: number | null;
   us_aqi: number | null;
   pm2_5: number | null;
+  weather_code: number | null;
+  is_day: number | null;
   updated_at: string;
 }
 
