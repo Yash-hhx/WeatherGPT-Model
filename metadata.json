@@ -1,5 +1,5 @@
 {
-  "name": "Forecast Companion Bot",
+  "name": "WeatherGPT-model",
   "description": "Live weather forecasting and disaster early warning system for Indian State and UT Capitals with 6-hour hourly forecasts, state-wise de-clustered hazard drill-down, predictive disaster warning models, and 3-phase emergency response protocols.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

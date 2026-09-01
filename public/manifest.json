@@ -1,13 +1,27 @@
 {
-  "name": "Forecast Companion Bot",
-  "short_name": "ForecastBot",
+  "name": "WeatherGPT-model",
+  "short_name": "WeatherGPT",
   "description": "Live weather forecasting and disaster early warning system for Indian State and UT Capitals",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#090d16",
   "theme_color": "#090d16",
   "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
     {
       "src": "/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",

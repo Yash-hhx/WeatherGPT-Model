@@ -86,13 +86,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
-      { title: "Forecast Companion Bot" },
+      { title: "WeatherGPT-model" },
       {
         name: "description",
         content:
           "Live weather forecasting and disaster early warning system for Indian State and UT Capitals with 6-hour hourly forecasts, state-wise de-clustered hazard drill-down, predictive disaster warning models, and 3-phase emergency response protocols.",
       },
-      { property: "og:title", content: "Forecast Companion Bot" },
+      { property: "og:title", content: "WeatherGPT-model" },
       {
         property: "og:description",
         content:
@@ -107,6 +107,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "/manifest.json",
       },
       {
+        rel: "apple-touch-icon",
+        href: "/icon.svg",
+      },
+      {
         rel: "stylesheet",
         href: appCss,
       },
@@ -116,6 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap",
       },
+      { rel: "icon", href: "/icon.svg", type: "image/svg+xml" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
