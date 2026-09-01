@@ -77,14 +77,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Forecast Companion Bot" },
+      {
+        name: "viewport",
+        content:
+          "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover",
+      },
+      { name: "theme-color", content: "#090d16" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { title: "WeatherGPT-model" },
       {
         name: "description",
         content:
           "Live weather forecasting and disaster early warning system for Indian State and UT Capitals with 6-hour hourly forecasts, state-wise de-clustered hazard drill-down, predictive disaster warning models, and 3-phase emergency response protocols.",
       },
-      { property: "og:title", content: "Forecast Companion Bot" },
+      { property: "og:title", content: "WeatherGPT-model" },
       {
         property: "og:description",
         content:
@@ -95,6 +103,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       {
+        rel: "manifest",
+        href: "/manifest.json",
+      },
+      {
+        rel: "apple-touch-icon",
+        href: "/icon.svg",
+      },
+      {
         rel: "stylesheet",
         href: appCss,
       },
@@ -104,6 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap",
       },
+      { rel: "icon", href: "/icon.svg", type: "image/svg+xml" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),

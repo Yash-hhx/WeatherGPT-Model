@@ -1,0 +1,8 @@
+{
+  "appId": "in.gov.ndma.forecastcompanion",
+  "appName": "Forecast Companion Bot",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}
