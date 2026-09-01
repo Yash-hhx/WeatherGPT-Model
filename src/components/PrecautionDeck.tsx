@@ -32,7 +32,7 @@ import {
   type Hazard,
   type Occupation,
 } from "@/lib/hazards";
-import { translateCard, type LangCode } from "@/lib/i18n";
+import { translateCard, translateOccupation, translatePhase, type LangCode } from "@/lib/i18n";
 
 export function PrecautionDeck({
   hazard,
@@ -61,6 +61,7 @@ export function PrecautionDeck({
         : (hazard.cards ?? []).filter((c) => !c.phase || c.phase === activePhase);
 
   const activePhaseMeta = DISASTER_PHASES.find((p) => p.id === activePhase) ?? DISASTER_PHASES[0];
+  const translatedActivePhase = translatePhase(activePhase, lang);
 
   const getOccupationIcon = (occ: Occupation) => {
     switch (occ) {
@@ -78,6 +79,131 @@ export function PrecautionDeck({
   };
 
   const getAudienceHeadline = (occ: Occupation, phase: DisasterPhase) => {
+    if (lang === "hi") {
+      switch (occ) {
+        case "farmer":
+          return phase === "before"
+            ? "किसान दिशा-निर्देश: कटाई, फसल सुरक्षा, पंपसेट व पशुधन को सुरक्षित स्थान पर पहुंचाना"
+            : phase === "during"
+              ? "किसान दिशा-निर्देश: आकाशीय बिजली व बाढ़ से बचाव, खुले खेतों से तुरंत सुरक्षित शेड में जाएं"
+              : "किसान दिशा-निर्देश: खेतों से खारे पानी की निकासी, चारे का कीटाणुशोधन व पीएमएफबीवाई क्लेम";
+        case "business":
+          return phase === "before"
+            ? "व्यापार व एमएसएमई: इन्वेंट्री वॉटरप्रूफिंग, जनरेटर सुरक्षित करना व डेटा बैकअप"
+            : phase === "during"
+              ? "व्यापार व एमएसएमई: काम बंद, बिजली आइसोलेशन व कर्मचारियों की सुरक्षा सत्यापन"
+              : "व्यापार व एमएसएमई: विद्युत ग्रिड पुनर्बहाली जांच व बीमा क्षतिपूर्ति क्लेम";
+        case "commuter":
+          return phase === "before"
+            ? "यातायात व रसद: तटीय हाईवे व अंडरपास अलर्ट, पेड़ गिरने का खतरा व सुरक्षित पार्किंग"
+            : phase === "during"
+              ? "यातायात व रसद: जलमग्न पुल व कॉजवे पार न करें — यात्रा तुरंत रोकें"
+              : "यातायात व रसद: सड़क निकासी सत्यापन, गड्ढों से बचाव व रूट स्टेटस";
+        case "government":
+          return phase === "before"
+            ? "प्रशासन व आपदा बल: अनिवार्य निकासी आदेश, सायरन अलर्ट व सैटेलाइट फोन टेस्टिंग"
+            : phase === "during"
+              ? "प्रशासन व आपदा बल: जिला आपदा केंद्र 1077 लाइव मॉनिटरिंग, एनडीआरएफ बोट व आपातकालीन राहत"
+              : "प्रशासन व आपदा बल: क्लोरीन/ओआरएस वितरण, राहत शिविर स्वच्छता व महामारी रोकथाम";
+        default:
+          return phase === "before"
+            ? "नागरिक व निवासी: 72 घंटे का राशन, शुद्ध पानी, दवाएं, टॉर्च व निकासी बैग तैयार रखें"
+            : phase === "during"
+              ? "नागरिक व निवासी: सुरक्षित कमरे में रहें, बिजली/गैस बंद रखें व 112/1077 हेल्पलाइन पर संपर्क करें"
+              : "नागरिक व निवासी: पानी उबालकर पिएं, टूटे बिजली तारों से दूर रहें व नुकसान दर्ज कराएं";
+      }
+    }
+
+    if (lang === "bn") {
+      switch (occ) {
+        case "farmer":
+          return "কৃষক ও কৃষি সুরক্ষা নির্দেশিকা: ফসল, গবাদি পশু ও পাম্পসেট রক্ষা";
+        case "business":
+          return "ব্যবসা ও বাণিজ্য: পণ্যসামগ্রী ও বিদ্যুৎ সুরক্ষা নির্দেশিকা";
+        case "commuter":
+          return "পরিবহন ও যাত্রী: প্লাবিত রাস্তা ও উপকূলীয় এলাকা পরিহার";
+        case "government":
+          return "প্রশাসন ও উদ্ধারকারী দল: জরুরি ত্রাণ ও সহায়তা পরিচালনা";
+        default:
+          return "নাগরিক ও বাসিন্দা: জরুরি রসদ, পানীয় জল ও আশ্রয় প্রস্তুতি";
+      }
+    }
+
+    if (lang === "or") {
+      switch (occ) {
+        case "farmer":
+          return "କୃଷକ ପରାମର୍ଶ: ଫସଲ ଅମଳ, ପମ୍ପସେଟ୍ ସୁରକ୍ଷା ଓ ଗୋରୁଗାଈ ସ୍ଥାନାନ୍ତର";
+        case "business":
+          return "ବ୍ୟବସାୟ ଓ ଶିଳ୍ପ: ସାମଗ୍ରୀ ସୁରକ୍ଷା ଓ ବିଦ୍ୟୁତ ବିଚ୍ଛିନ୍ନତା";
+        case "commuter":
+          return "ପରିବହନ ଓ ଯାତ୍ରୀ: ବନ୍ୟା ପ୍ରଭାବିତ ରାସ୍ତାରୁ ଦୂରେଇ ରୁହନ୍ତୁ";
+        case "government":
+          return "ପ୍ରଶାସନ ଓ ଉଦ୍ଧାରକାରୀ ଦଳ: ରିଲିଫ୍ ଓ ଆଶ୍ରୟସ୍ଥଳୀ ପରିଚାଳନା";
+        default:
+          return "ସାଧାରଣ ନାଗରିକ: ଶୁଖିଲା ଖାଦ୍ୟ, ପିଇବା ପାଣି ଓ ଆଶ୍ରୟସ୍ଥଳୀ ପ୍ରସ୍ତୁତି";
+      }
+    }
+
+    if (lang === "mr") {
+      switch (occ) {
+        case "farmer":
+          return "शेतकरी मार्गदर्शक: पीक संरक्षण, जनावरांची निगा व शेती कामे";
+        case "business":
+          return "उद्योग व व्यापारी: यंत्रसामग्री व वीज जोडणी सुरक्षितता";
+        case "commuter":
+          return "वाहतूक व प्रवासी: पाणी साचलेले रस्ते व दरड कोसळण्यापासून बचाव";
+        case "government":
+          return "प्रशासन व मदत कार्य: आपत्कालीन प्रतिसाद व नियंत्रण कक्ष";
+        default:
+          return "नागरिक व रहिवासी: सुरक्षित निवारा, पिण्याचे पाणी व आपत्कालीन मदत";
+      }
+    }
+
+    if (lang === "gu") {
+      switch (occ) {
+        case "farmer":
+          return "ખેડૂત માર્ગદર્શિકા: પાક રક્ષણ, પશુધન સ્થળાંતર અને પિયત વ્યવસ્થા";
+        case "business":
+          return "વેપાર અને ઉદ્યોગ: માલસામાન રક્ષણ અને વીજ નિયંત્રણ";
+        case "commuter":
+          return "વાહનવ્યવહાર: પાણી ભરાયેલા રસ્તાઓ ટાળો અને સલામત રહો";
+        case "government":
+          return "તંત્ર અને આપત્તિ વ્યવસ્થાપન: કટોકટી બચાવ અને રાહત કામગીરી";
+        default:
+          return "નાગરિકો અને રહેવાસીઓ: રાશન, પીવાનું પાણી અને આશ્રય તૈયારી";
+      }
+    }
+
+    if (lang === "ta") {
+      switch (occ) {
+        case "farmer":
+          return "விவசாயிகள் வழிகாட்டுதல்: பயிர் பாதுகாப்பு & கால்நடை பராமரிப்பு";
+        case "business":
+          return "வணிகம் & தொழில்கள்: சொத்து பாதுகாப்பு & மின் இணைப்பு துண்டிப்பு";
+        case "commuter":
+          return "போக்குவரத்து: நீர் தேங்கிய சாலைகளைத் தவிர்த்தல்";
+        case "government":
+          return "அரசு & மீட்புப் பணி: கட்டுப்பாட்டு அறை & நிவாரண முகாம்கள்";
+        default:
+          return "பொதுமக்கள்: அவசரத் தேவைகள், குடிநீர் & முகாம் பாதுகாப்பு";
+      }
+    }
+
+    if (lang === "te") {
+      switch (occ) {
+        case "farmer":
+          return "రైతుల మార్గదర్శకాలు: పంటల రక్షణ & పశువుల తరలింపు";
+        case "business":
+          return "వ్యాపార సంస్థలు: ఆస్తుల రక్షణ & విద్యుత్ నియంత్రణ";
+        case "commuter":
+          return "రవాణా & ప్రయాణాలు: ముంపునకు గురైన మార్గాలను నివారించండి";
+        case "government":
+          return "ప్రభుత్వ యంత్రాంగం: పునరావాస చర్యలు & సహాయక బృందాలు";
+        default:
+          return "పౌరుల భద్రత: తాగునీరు, నిత్యావసరాలు & షెల్టర్ సంసిద్ధత";
+      }
+    }
+
     switch (occ) {
       case "farmer":
         return phase === "before"
@@ -120,14 +246,35 @@ export function PrecautionDeck({
           <div className="flex items-center gap-2">
             <Shield className="size-4 text-hazard-safe" />
             <h2 className="font-display text-sm uppercase tracking-widest text-foreground font-bold">
-              Disaster Response & Lifecycle Precautions
+              {lang === "hi"
+                ? "आपदा प्रबंधन व जीवन चक्र सावधानियां"
+                : lang === "bn"
+                  ? "দুর্যোগ প্রতিক্রিয়া ও সতর্কতা নির্দেশিকা"
+                  : lang === "or"
+                    ? "ବିପର୍ଯ୍ୟୟ ପ୍ରତିକ୍ରିୟା ଓ ସତର୍କତା ନିୟମାବଳୀ"
+                    : lang === "mr"
+                      ? "आपत्ती प्रतिसाद व सुरक्षा उपाययोजना"
+                      : lang === "gu"
+                        ? "આપત્તિ વ્યવસ્થાપન અને સાવચેતીનાં પગલાં"
+                        : lang === "ta"
+                          ? "பேரிடர் முன்னெச்சரிக்கை வழிகாட்டுதல்கள்"
+                          : lang === "te"
+                            ? "విపత్తు నిర్వహణ & ముందస్తు జాగ్రత్తలు"
+                            : "Disaster Response & Lifecycle Precautions"}
             </h2>
           </div>
 
           <div className="hidden sm:flex items-center gap-1.5 text-xs text-subtle-foreground">
             <span className="text-border">•</span>
             <span>
-              Target Hazard: <strong className="text-foreground">{hazard.name}</strong>
+              {lang === "hi"
+                ? "चिह्नित आपदा: "
+                : lang === "bn"
+                  ? "নির্দিষ্ট দুর্যোগ: "
+                  : lang === "or"
+                    ? "ଚିହ୍ନିତ ବିପର୍ଯ୍ୟୟ: "
+                    : "Target Hazard: "}
+              <strong className="text-foreground">{hazard.name}</strong>
             </span>
           </div>
         </div>
@@ -144,7 +291,23 @@ export function PrecautionDeck({
               }`}
             >
               <PhoneCall className="size-3" />
-              <span>SOS Helplines</span>
+              <span>
+                {lang === "hi"
+                  ? "आपातकालीन हेल्पलाइन"
+                  : lang === "bn"
+                    ? "জরুরি হেল্পলাইন"
+                    : lang === "or"
+                      ? "ଜରୁରୀ ହେଲ୍ପଲାଇନ୍"
+                      : lang === "mr"
+                        ? "आपत्कालीन संपर्क"
+                        : lang === "gu"
+                          ? "ઇમરજન્સી હેલ્પલાઇન"
+                          : lang === "ta"
+                            ? "அவசர எண்கள்"
+                            : lang === "te"
+                              ? "అత్యవసర హెల్ప్‌లైన్"
+                              : "SOS Helplines"}
+              </span>
             </button>
 
             <button
@@ -153,7 +316,23 @@ export function PrecautionDeck({
               className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition cursor-pointer bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/25 border border-emerald-500/30"
             >
               <Home className="size-3" />
-              <span>Relocation Shelters ({hazard.relocationHubs?.length || 0})</span>
+              <span>
+                {lang === "hi"
+                  ? `राहत आश्रय केंद्र (${hazard.relocationHubs?.length || 0})`
+                  : lang === "bn"
+                    ? `আশ্রয় কেন্দ্র (${hazard.relocationHubs?.length || 0})`
+                    : lang === "or"
+                      ? `ଆଶ୍ରୟସ୍ଥଳୀ (${hazard.relocationHubs?.length || 0})`
+                      : lang === "mr"
+                        ? `निवारा केंद्र (${hazard.relocationHubs?.length || 0})`
+                        : lang === "gu"
+                          ? `આશ્રય કેન્દ્રો (${hazard.relocationHubs?.length || 0})`
+                          : lang === "ta"
+                            ? `நிவாரண முகாம்கள் (${hazard.relocationHubs?.length || 0})`
+                            : lang === "te"
+                              ? `పునరావాస కేంద్రాలు (${hazard.relocationHubs?.length || 0})`
+                              : `Relocation Shelters (${hazard.relocationHubs?.length || 0})`}
+              </span>
             </button>
           </div>
 
@@ -165,6 +344,10 @@ export function PrecautionDeck({
       <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
         {DISASTER_PHASES.map((p) => {
           const isSelected = activePhase === p.id;
+          const phaseTrans = translatePhase(p.id, lang);
+          const displayLabel = phaseTrans?.iconLabel || p.iconLabel;
+          const displayDesc = phaseTrans?.desc || p.desc;
+
           return (
             <button
               key={p.id}
@@ -182,12 +365,12 @@ export function PrecautionDeck({
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
-                  {p.iconLabel}
+                  {displayLabel}
                 </span>
                 {isSelected && <CheckCircle2 className="size-3.5 text-hazard-safe shrink-0" />}
               </div>
               <p className="mt-1 text-[11px] text-subtle-foreground line-clamp-1 leading-snug">
-                {p.desc}
+                {displayDesc}
               </p>
             </button>
           );
@@ -199,15 +382,29 @@ export function PrecautionDeck({
         <div className="mt-3 rounded-lg border border-hazard-critical/40 bg-panel p-3 animate-in fade-in duration-200 shadow-md">
           <div className="flex items-center justify-between pb-2 border-b border-border">
             <span className="text-xs font-bold uppercase tracking-wider text-hazard-critical flex items-center gap-1.5">
-              <PhoneCall className="size-3.5" /> Emergency SOS Contacts & National Helplines
-              (Toll-Free 24x7)
+              <PhoneCall className="size-3.5" />{" "}
+              {lang === "hi"
+                ? "राष्ट्रीय आपातकालीन हेल्पलाइन व राहत संपर्क (टोल-फ्री 24x7)"
+                : lang === "bn"
+                  ? "জরুরি এসওএস ও জাতীয় হেল্পলাইন নম্বর (২৪x৭)"
+                  : lang === "or"
+                    ? "ଜରୁରୀକାଳୀନ ହେଲ୍ପଲାଇନ୍ ନମ୍ବର (୨୪x୭ ଟୋଲ୍-ଫ୍ରି)"
+                    : lang === "mr"
+                      ? "आपत्कालीन संपर्क व राष्ट्रीय हेल्पलाईन (२४x७)"
+                      : lang === "gu"
+                        ? "રાષ્ટ્રીય ઇમરજન્સી હેલ્પલાઇન અને સંપર્ક (૨૪x૭)"
+                        : lang === "ta"
+                          ? "தேசிய அவசர உதவி எண்கள் (24x7)"
+                          : lang === "te"
+                            ? "జాతీయ అత్యవసర హెల్ప్‌లైన్ నంబర్లు (24x7)"
+                            : "Emergency SOS Contacts & National Helplines (Toll-Free 24x7)"}
             </span>
             <button
               type="button"
               onClick={() => setShowHelplines(false)}
               className="text-[10px] text-subtle-foreground hover:text-foreground uppercase tracking-wider cursor-pointer font-bold"
             >
-              Close
+              {lang === "hi" ? "बंद करें" : "Close"}
             </button>
           </div>
           <div className="mt-2.5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
@@ -237,12 +434,27 @@ export function PrecautionDeck({
         <div className="flex items-center gap-1.5 text-xs text-subtle-foreground font-semibold">
           <Users className="size-3.5 text-emerald-500" />
           <span className="uppercase tracking-wider text-[11px] font-bold text-foreground">
-            Target Audience:
+            {lang === "hi"
+              ? "लक्षित वर्ग:"
+              : lang === "bn"
+                ? "উদ্দিষ্ট দল:"
+                : lang === "or"
+                  ? "ଲକ୍ଷ୍ୟଧାର୍ଯ୍ୟ ବର୍ଗ:"
+                  : lang === "mr"
+                    ? "लक्षित गट:"
+                    : lang === "gu"
+                      ? "લક્ષિત જૂથ:"
+                      : lang === "ta"
+                        ? "பிரிவு:"
+                        : lang === "te"
+                          ? "వర్గం:"
+                          : "Target Audience:"}
           </span>
         </div>
         <nav className="flex flex-wrap gap-1.5">
           {OCCUPATIONS.map((o) => {
             const isSelected = occupation === o.id;
+            const translatedOccLabel = translateOccupation(o.id, lang) || o.label;
             return (
               <button
                 key={o.id}
@@ -255,7 +467,7 @@ export function PrecautionDeck({
                 }`}
               >
                 {getOccupationIcon(o.id)}
-                <span>{o.label}</span>
+                <span>{translatedOccLabel}</span>
               </button>
             );
           })}
@@ -271,7 +483,14 @@ export function PrecautionDeck({
           </span>
         </div>
         <span className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider shrink-0 bg-background/80 px-2 py-0.5 rounded border border-border">
-          {cards.length} Action Directives
+          {cards.length}{" "}
+          {lang === "hi"
+            ? "सुरक्षा निर्देश"
+            : lang === "bn"
+              ? "নির্দেশিকা"
+              : lang === "or"
+                ? "ନିର୍ଦ୍ଦେଶାବଳୀ"
+                : "Action Directives"}
         </span>
       </div>
 
@@ -283,7 +502,17 @@ export function PrecautionDeck({
           </div>
         ) : (
           cards.map((card) => {
-            const t = translateCard(hazard.id, lang, card.label);
+            const t = translateCard(
+              hazard.id,
+              lang,
+              card.label,
+              card.action,
+              card.details,
+              card.occupation,
+              card.phase,
+            );
+            const translatedOccName = translateOccupation(card.occupation, lang) || card.occupation;
+
             return (
               <article
                 key={`${card.occupation}-${card.label}`}
@@ -305,9 +534,9 @@ export function PrecautionDeck({
                     {t?.action ?? card.action}
                   </p>
 
-                  {card.details && (
+                  {(t?.details || card.details) && (
                     <p className="mt-2 rounded-lg bg-background/80 p-2 text-[11px] leading-relaxed text-muted-foreground border border-border/60">
-                      {card.details}
+                      {t?.details ?? card.details}
                     </p>
                   )}
                 </div>
@@ -315,9 +544,11 @@ export function PrecautionDeck({
                 <div className="mt-2.5 pt-2 border-t border-border/80 flex items-center justify-between text-[10px] text-subtle-foreground">
                   <span className="flex items-center gap-1 font-semibold uppercase tracking-wider">
                     {getOccupationIcon(card.occupation)}
-                    <span>{card.occupation}</span>
+                    <span>{translatedOccName}</span>
                   </span>
-                  <span className="font-mono">{card.phase || activePhase}</span>
+                  <span className="font-mono">
+                    {translatedActivePhase?.iconLabel || card.phase || activePhase}
+                  </span>
                 </div>
               </article>
             );

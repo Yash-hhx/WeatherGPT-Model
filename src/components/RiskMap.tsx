@@ -13,6 +13,7 @@ import {
   MapPin,
   Maximize2,
   Minimize2,
+  Mountain,
   Navigation,
   PhoneCall,
   Radio,
@@ -22,6 +23,7 @@ import {
   Sparkles,
   Sun,
   Thermometer,
+  Waves,
   Wind,
   X,
   Zap,
@@ -44,6 +46,15 @@ import {
   type Severity,
   type StateHazardGroup,
 } from "@/lib/hazards";
+import {
+  ANDAMAN_NICOBAR_PATHS,
+  INDIA_MAINLAND_PATH,
+  LAKSHADWEEP_PATHS,
+  MAJOR_RIVER_SYSTEMS,
+  NEIGHBORING_LAND_PATHS,
+  STATE_INTERNAL_BORDERS,
+  TOPOGRAPHIC_MOUNTAIN_RIDGES,
+} from "@/lib/india-geo-data";
 import type { PredictiveDisasterAlert } from "@/lib/predictive-engine";
 
 const MIN_ZOOM = 1;
@@ -105,6 +116,9 @@ export function RiskMap({
   const [dragging, setDragging] = useState(false);
   const [showHeatmapLayer, setShowHeatmapLayer] = useState(true);
   const [showLabels, setShowLabels] = useState(true);
+  const [showRivers, setShowRivers] = useState(true);
+  const [showBorders, setShowBorders] = useState(true);
+  const [showTopography, setShowTopography] = useState(true);
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
@@ -371,87 +385,79 @@ export function RiskMap({
               <line x1="75" y1="0" x2="75" y2="100" />
             </g>
 
-            {/* Geographic Landmass Boundary of India */}
+            {/* Geographic Landmass Boundary of India & Territorial Islands */}
             <g>
+              {/* Neighboring Reference Landmasses (e.g. Sri Lanka) */}
+              <g className="fill-panel/40 stroke-border/40" strokeWidth="0.4">
+                {NEIGHBORING_LAND_PATHS.map((p, i) => (
+                  <path key={`neighbor-${i}`} d={p} />
+                ))}
+              </g>
+
+              {/* Accurate Survey of India Mainland Landmass */}
               <path
-                d="M 37.5 12.0
-                   C 36.5 15.0, 34.0 18.0, 31.0 22.0
-                   C 26.0 26.0, 21.0 30.0, 19.5 35.0
-                   C 18.0 40.0, 20.0 45.0, 22.5 48.5
-                   C 24.5 51.5, 23.0 55.5, 25.5 58.5
-                   C 27.5 61.5, 29.5 67.0, 32.5 73.0
-                   C 35.0 78.0, 38.0 84.0, 42.0 90.0
-                   C 43.5 92.5, 45.0 92.5, 46.5 89.0
-                   C 50.0 81.0, 55.0 73.0, 58.5 65.0
-                   C 62.0 57.0, 68.0 50.0, 72.0 44.0
-                   C 75.0 39.0, 80.0 35.0, 86.0 32.0
-                   C 91.0 29.5, 93.0 25.0, 90.0 22.0
-                   C 86.0 19.0, 81.0 21.0, 77.0 24.0
-                   C 72.0 26.0, 66.0 27.0, 60.0 25.0
-                   C 54.0 22.0, 49.0 17.0, 44.0 13.0
-                   Z"
-                className="fill-panel/90 stroke-border"
+                d={INDIA_MAINLAND_PATH}
+                className="fill-panel/95 stroke-border"
                 strokeWidth="0.75"
               />
 
-              {/* Land Texture */}
-              <path
-                d="M 37.5 12.0
-                   C 36.5 15.0, 34.0 18.0, 31.0 22.0
-                   C 26.0 26.0, 21.0 30.0, 19.5 35.0
-                   C 18.0 40.0, 20.0 45.0, 22.5 48.5
-                   C 24.5 51.5, 23.0 55.5, 25.5 58.5
-                   C 27.5 61.5, 29.5 67.0, 32.5 73.0
-                   C 35.0 78.0, 38.0 84.0, 42.0 90.0
-                   C 43.5 92.5, 45.0 92.5, 46.5 89.0
-                   C 50.0 81.0, 55.0 73.0, 58.5 65.0
-                   C 62.0 57.0, 68.0 50.0, 72.0 44.0
-                   C 75.0 39.0, 80.0 35.0, 86.0 32.0
-                   C 91.0 29.5, 93.0 25.0, 90.0 22.0
-                   C 86.0 19.0, 81.0 21.0, 77.0 24.0
-                   C 72.0 26.0, 66.0 27.0, 60.0 25.0
-                   C 54.0 22.0, 49.0 17.0, 44.0 13.0
-                   Z"
-                fill="url(#landGrid)"
-              />
+              {/* Land Topographic Texture */}
+              <path d={INDIA_MAINLAND_PATH} fill="url(#landGrid)" />
 
-              {/* Internal State Geospatial Delimitation Lines */}
-              <g
-                className="stroke-border/45 fill-none"
-                strokeWidth="0.35"
-                strokeDasharray="0.6 0.8"
-              >
-                {/* Northern States (J&K, HP, Punjab, Haryana, Uttarakhand) */}
-                <path d="M 33 21 C 36 23, 40 21, 45 19" />
-                <path d="M 31 25 C 37 26, 42 27, 47 25" />
-                {/* Western & Central (Rajasthan, Gujarat, MP) */}
-                <path d="M 23 38 C 30 37, 39 39, 48 37" />
-                <path d="M 21 47 C 27 46, 35 48, 43 49" />
-                <path d="M 36 38 C 42 45, 47 48, 55 46" />
-                {/* Eastern & Gangetic Plains (UP, Bihar, WB, Odisha) */}
-                <path d="M 46 29 C 52 33, 60 34, 68 36" />
-                <path d="M 54 36 C 58 42, 62 45, 68 47" />
-                <path d="M 50 49 C 55 53, 58 58, 62 60" />
-                {/* Peninsular & Southern (Maharashtra, Karnataka, AP, TN, Kerala) */}
-                <path d="M 26 58 C 34 59, 44 57, 52 61" />
-                <path d="M 29 67 C 36 68, 43 68, 50 71" />
-                <path d="M 33 77 C 39 78, 44 80, 46 86" />
-                {/* North-East Corridor (Assam, Meghalaya, Arunachal) */}
-                <path d="M 72 32 C 78 30, 83 31, 89 27" />
-                <path d="M 75 37 C 80 37, 85 36, 88 38" />
+              {/* Andaman & Nicobar Islands Archipelago */}
+              <g className="fill-panel/95 stroke-border" strokeWidth="0.5">
+                {ANDAMAN_NICOBAR_PATHS.map((p, i) => (
+                  <path key={`an-island-${i}`} d={p} />
+                ))}
               </g>
 
-              {/* Coastline Highlight */}
+              {/* Lakshadweep Archipelago */}
+              <g className="fill-panel/95 stroke-border" strokeWidth="0.5">
+                {LAKSHADWEEP_PATHS.map((p, i) => (
+                  <path key={`lk-island-${i}`} d={p} />
+                ))}
+              </g>
+
+              {/* Topographic Mountain Ridges & Ranges */}
+              {showTopography && (
+                <g
+                  className="stroke-stone-400/40 dark:stroke-stone-500/40 fill-none"
+                  strokeWidth="0.45"
+                  strokeDasharray="1 1.2"
+                >
+                  {TOPOGRAPHIC_MOUNTAIN_RIDGES.map((p, i) => (
+                    <path key={`ridge-${i}`} d={p} />
+                  ))}
+                </g>
+              )}
+
+              {/* Major River & Drainage Networks */}
+              {showRivers && (
+                <g className="stroke-sky-500/45 fill-none" strokeWidth="0.42">
+                  {MAJOR_RIVER_SYSTEMS.map((r, i) => (
+                    <path key={`river-${i}`} d={r.d} />
+                  ))}
+                </g>
+              )}
+
+              {/* Internal State Geospatial Delimitation Lines */}
+              {showBorders && (
+                <g
+                  className="stroke-border/60 fill-none"
+                  strokeWidth="0.32"
+                  strokeDasharray="0.6 0.8"
+                >
+                  {STATE_INTERNAL_BORDERS.map((b, i) => (
+                    <path key={`state-border-${i}`} d={b} />
+                  ))}
+                </g>
+              )}
+
+              {/* Coastline Highlight Glow */}
               <path
-                d="M 20 44
-                   C 23 50, 24 55, 26 60
-                   C 28 65, 31 72, 35 80
-                   C 38 85, 42 90, 44 92
-                   C 46 90, 50 82, 55 74
-                   C 60 66, 66 58, 70 50
-                   C 73 45, 78 40, 84 35"
-                className="stroke-sky-500/40 fill-none"
-                strokeWidth="0.6"
+                d={INDIA_MAINLAND_PATH}
+                className="stroke-sky-500/40 fill-none pointer-events-none"
+                strokeWidth="0.65"
               />
             </g>
 
@@ -804,6 +810,62 @@ export function RiskMap({
               })}
             </>
           )}
+
+          {/* Territorial Island Labels & Marine Basin Watermarks */}
+          {showLabels && (
+            <>
+              <div
+                className="pointer-events-none absolute select-none whitespace-nowrap text-[8px] font-bold uppercase tracking-widest text-muted-foreground/60"
+                style={{
+                  left: "77%",
+                  top: "79%",
+                  transform: `translate(-50%, -50%) scale(${labelScale})`,
+                }}
+              >
+                Andaman &amp; Nicobar (UT)
+              </div>
+              <div
+                className="pointer-events-none absolute select-none whitespace-nowrap text-[8px] font-bold uppercase tracking-widest text-muted-foreground/60"
+                style={{
+                  left: "22%",
+                  top: "80%",
+                  transform: `translate(-50%, -50%) scale(${labelScale})`,
+                }}
+              >
+                Lakshadweep (UT)
+              </div>
+              <div
+                className="pointer-events-none absolute select-none whitespace-nowrap text-[8px] font-bold uppercase tracking-widest text-sky-500/40"
+                style={{
+                  left: "17%",
+                  top: "62%",
+                  transform: `translate(-50%, -50%) scale(${labelScale})`,
+                }}
+              >
+                Arabian Sea
+              </div>
+              <div
+                className="pointer-events-none absolute select-none whitespace-nowrap text-[8px] font-bold uppercase tracking-widest text-sky-500/40"
+                style={{
+                  left: "68%",
+                  top: "66%",
+                  transform: `translate(-50%, -50%) scale(${labelScale})`,
+                }}
+              >
+                Bay of Bengal
+              </div>
+              <div
+                className="pointer-events-none absolute select-none whitespace-nowrap text-[8px] font-bold uppercase tracking-widest text-sky-500/40"
+                style={{
+                  left: "45%",
+                  top: "96%",
+                  transform: `translate(-50%, -50%) scale(${labelScale})`,
+                }}
+              >
+                Indian Ocean
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -1017,6 +1079,43 @@ export function RiskMap({
           aria-label="Toggle Labels"
         >
           {showLabels ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowRivers((prev) => !prev)}
+          className={`flex size-7 items-center justify-center rounded transition cursor-pointer ${
+            showRivers ? "bg-sky-500/20 text-sky-500" : "text-muted-foreground hover:bg-panel"
+          }`}
+          title={showRivers ? "Hide River Systems" : "Show River Systems"}
+          aria-label="Toggle Rivers"
+        >
+          <Waves className="size-3.5" />
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowTopography((prev) => !prev)}
+          className={`flex size-7 items-center justify-center rounded transition cursor-pointer ${
+            showTopography
+              ? "bg-amber-500/20 text-amber-500"
+              : "text-muted-foreground hover:bg-panel"
+          }`}
+          title={showTopography ? "Hide Mountain Ridges" : "Show Mountain Ridges"}
+          aria-label="Toggle Mountain Ridges"
+        >
+          <Mountain className="size-3.5" />
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowBorders((prev) => !prev)}
+          className={`flex size-7 items-center justify-center rounded transition cursor-pointer ${
+            showBorders
+              ? "bg-purple-500/20 text-purple-500"
+              : "text-muted-foreground hover:bg-panel"
+          }`}
+          title={showBorders ? "Hide State Boundaries" : "Show State Boundaries"}
+          aria-label="Toggle State Boundaries"
+        >
+          <Layers className="size-3.5" />
         </button>
       </div>
 
