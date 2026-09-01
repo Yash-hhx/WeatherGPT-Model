@@ -25,14 +25,14 @@ export const LANGUAGES: Record<LangCode, Language> = {
   as: { code: "as", label: "Assamese", native: "অসমীয়া" },
 };
 
-/** Languages offered for a hazard — prioritized by vulnerable linguistic zones and national coverage */
+/** Languages offered for a hazard — full pan-India coverage across all 11 regional languages */
 export const HAZARD_LANGUAGES: Record<HazardId, LangCode[]> = {
-  cyclone: ["en", "hi", "or", "bn", "te", "ta"],
-  flood: ["en", "hi", "as", "bn", "or", "te"],
-  heat: ["en", "hi", "mr", "gu", "pa", "te"],
-  thunderstorm: ["en", "hi", "bn", "or", "as"],
-  airquality: ["en", "hi", "pa", "gu"],
-  rain: ["en", "hi", "mr", "gu", "kn", "ml"],
+  cyclone: ["en", "hi", "bn", "or", "mr", "ta", "te", "gu", "pa", "kn", "ml", "as"],
+  flood: ["en", "hi", "bn", "or", "mr", "ta", "te", "gu", "pa", "kn", "ml", "as"],
+  heat: ["en", "hi", "bn", "or", "mr", "ta", "te", "gu", "pa", "kn", "ml", "as"],
+  thunderstorm: ["en", "hi", "bn", "or", "mr", "ta", "te", "gu", "pa", "kn", "ml", "as"],
+  airquality: ["en", "hi", "bn", "or", "mr", "ta", "te", "gu", "pa", "kn", "ml", "as"],
+  rain: ["en", "hi", "bn", "or", "mr", "ta", "te", "gu", "pa", "kn", "ml", "as"],
 };
 
 export interface CardText {

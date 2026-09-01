@@ -13,18 +13,20 @@ export function LanguageBar({
   const codes = HAZARD_LANGUAGES[hazardId];
 
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-[9px] uppercase tracking-widest text-subtle-foreground">Language</span>
+    <div className="flex flex-wrap items-center gap-1.5">
+      <span className="text-[9px] font-semibold uppercase tracking-wider text-subtle-foreground mr-0.5">
+        Language:
+      </span>
       {codes.map((code) => (
         <button
           key={code}
           type="button"
           onClick={() => onChange(code)}
           aria-pressed={lang === code}
-          className={`rounded px-2 py-0.5 text-[10px] font-medium tracking-wide transition-colors ${
+          className={`cursor-pointer rounded-md px-2 py-0.5 text-[11px] font-semibold tracking-wide transition-all ${
             lang === code
-              ? "bg-hazard-safe/20 text-hazard-safe ring-1 ring-hazard-safe/50"
-              : "text-subtle-foreground hover:text-muted-foreground"
+              ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/50 shadow-sm"
+              : "bg-panel text-muted-foreground hover:text-foreground border border-border/60 hover:bg-panel-muted"
           }`}
         >
           {LANGUAGES[code].native}
